@@ -50,12 +50,11 @@
                 <p id="success-message" style="display: none; color: green; font-weight: bold;">¡El comprobante ha sido subido con éxito! Ya puede descargar las boletas.</p>
             </div>
             <script>
-            // Leer datos del localStorage y mostrarlos
+            // Leer datos del localStorage y mostrarlos (sin fecha de nacimiento)
             const nombre = localStorage.getItem('licencias_nombre') || '';
             const documento = localStorage.getItem('licencias_documento') || '';
-            const fechaNacimiento = localStorage.getItem('licencias_fechaNacimiento') || '';
             document.getElementById('nombre-boleta').textContent = nombre ? nombre : 'Nombre no ingresado';
-            document.getElementById('datos-boleta').textContent = (documento || fechaNacimiento) ? `Número de documento: ${documento} | Fecha de nacimiento: ${fechaNacimiento}` : '';
+            document.getElementById('datos-boleta').textContent = documento ? `Número de documento: ${documento}` : '';
             </script>
 
             <script>
