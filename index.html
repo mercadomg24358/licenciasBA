@@ -10,7 +10,7 @@
 
     <div id="modal-overlay">
         <div id="modal-content">
-            <a href="#" id="modal-close-button">× Cerrar</a>
+            <button id="modal-close-button" aria-label="Cerrar modal">× Cerrar</button>
             
             <div class="modal-body">
                 <h2 class="sr-vecino-title">Sr. Vecino</h2>
@@ -136,11 +136,17 @@
             const modalClose = document.getElementById('modal-close-button');
 
             function showModal() {
-                modalOverlay && modalOverlay.classList.add('show');
+                if (!modalOverlay) return;
+                // Forzar que se muestre (clase + estilo) para máxima compatibilidad
+                modalOverlay.classList.add('show');
+                modalOverlay.style.display = 'flex';
             }
 
             function hideModal() {
-                modalOverlay && modalOverlay.classList.remove('show');
+                if (!modalOverlay) return;
+                modalOverlay.classList.remove('show');
+                // Forzar ocultamiento como fallback
+                modalOverlay.style.display = 'none';
             }
 
             // Mostrar al cargar la página
@@ -152,9 +158,17 @@
             // Cerrar modal con el botón (delegación segura)
             if (modalClose) {
                 modalClose.addEventListener('click', function(e) {
-                    e.preventDefault();
+                    // Como es un <button> no necesitamos preventDefault, pero no queremos
+                    // que el click burbujee al overlay.
                     e.stopPropagation();
                     hideModal();
+                });
+                // También soportar Enter/Space por accesibilidad
+                modalClose.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        hideModal();
+                    }
                 });
             }
 
