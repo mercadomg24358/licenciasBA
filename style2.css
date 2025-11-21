@@ -217,14 +217,16 @@ body {
 
 .download-buttons-container {
     display: flex;
+    flex-direction: column; /* apilar pares verticalmente */
     justify-content: center;
-    gap: 15px; /* Espacio entre los dos botones */
+    gap: 14px; /* espacio entre pares de boletas */
+    align-items: center;
 }
 
 .boleta-button {
-    display: block;
-    width: 250px;
-    padding: 15px 20px;
+    display: inline-block;
+    width: 190px;
+    padding: 12px 18px;
     background-color: #00C8C8; /* Turquesa */
     color: white;
     text-decoration: none;
@@ -286,6 +288,13 @@ body {
         align-items: stretch;
     }
 
+    /* Cada par de boletas (CENAT+CEPAT) se muestra horizontal en móvil también */
+    .download-buttons-container > div {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+    }
+
     .boletas-info-container {
         padding: 20px 10px;
     }
@@ -302,6 +311,14 @@ body {
     .form-fields input, .form-fields select { padding: 10px; font-size: 14px; }
     .next-button { padding: 10px; font-size: 15px; }
     .logo-area h1 { font-size: 20px; }
+}
+
+/* Estilo para cada par de boletas en escritorio: asegurar alineación y separación */
+.download-buttons-container > div {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    align-items: center;
 }
 
 /* Evitar overflow horizontal en móviles */
