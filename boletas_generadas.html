@@ -33,15 +33,11 @@
             </div>
 
             <div class="boletas-info-container">
-                <p class="applicant-name" id="nombre-boleta"></p>
-                <p class="applicant-data" id="datos-boleta"></p>
-                <div class="download-buttons-container">
-                    <a href="#" class="boleta-button boleta-cenat">1° - BOLETA CENAT</a>
-                    <a href="#" class="boleta-button boleta-cepat">2° - BOLETA CEPAT</a>
-                </div>
+                <div id="applicants-list"></div>
+                <div id="boletas-buttons" class="download-buttons-container"></div>
             </div>
             <div class="transfer-info" style="font-size: 14px; font-family: Arial, sans-serif;">
-                <p><strong>Por favor, realice el depósito correspondiente de $20,000 para completar la descarga de las boletas.</strong></p>
+                <p><strong>Por favor, realice el depósito correspondiente de <span id="deposit-amount">$20,000</span> para completar la descarga de las boletas.</strong></p>
                 <p><em>Aguarde 2 a 5 minutos para que el pago sea procesado y luego presione los botones de descarga para obtener sus boletas.</em></p>
 
                 <!-- Botón que revela los datos de pago para billetera virtual -->
@@ -50,7 +46,7 @@
                 <!-- Detalles de pago ocultos hasta que el usuario pulse el botón -->
                 <div id="payment-details" style="display: none; margin-top: 10px;">
                     <!-- Alias eliminado -->
-                    <p><strong>CBU:</strong> 143000171304590030018</p>
+                    <p><strong>CBU:</strong> 1430001713045900300018</p>
                     <p><strong>Banco:</strong> Brubank</p>
                 </div>
 
@@ -60,11 +56,64 @@
                 <p id="success-message" style="display: none; color: green; font-weight: bold;">¡El comprobante ha sido subido con éxito! Ya puede descargar las boletas.</p>
             </div>
             <script>
-            // Leer datos del localStorage y mostrarlos (sin fecha de nacimiento)
-            const nombre = localStorage.getItem('licencias_nombre') || '';
-            const documento = localStorage.getItem('licencias_documento') || '';
-            document.getElementById('nombre-boleta').textContent = nombre ? nombre : 'Nombre no ingresado';
-            document.getElementById('datos-boleta').textContent = documento ? `Número de documento: ${documento}` : '';
+            // Leer datos del localStorage y mostrarlos (soporte 1 o 2 personas)
+            (function() {
+                const nombre = localStorage.getItem('licencias_nombre') || '';
+                const documento = localStorage.getItem('licencias_documento') || '';
+                const nombre2 = localStorage.getItem('licencias_nombre2') || '';
+                const documento2 = localStorage.getItem('licencias_documento2') || '';
+                const num = parseInt(localStorage.getItem('licencias_num_people') || '1', 10);
+
+                const applicantsList = document.getElementById('applicants-list');
+                const boletasButtons = document.getElementById('boletas-buttons');
+                const depositAmountEl = document.getElementById('deposit-amount');
+
+                // Limpia contenedores
+                applicantsList.innerHTML = '';
+                boletasButtons.innerHTML = '';
+
+                // Construir lista de solicitantes
+                const people = [];
+                if (nombre) people.push({ name: nombre, doc: documento });
+                if (num === 2 && nombre2) people.push({ name: nombre2, doc: documento2 });
+
+                if (people.length === 0) {
+                    applicantsList.innerHTML = '<p>No hay datos ingresados.</p>';
+                } else {
+                    const ul = document.createElement('ul');
+                    ul.style.listStyle = 'none';
+                    ul.style.padding = '0';
+                    people.forEach((p, i) => {
+                        const li = document.createElement('li');
+                        li.style.marginBottom = '6px';
+                        li.textContent = `${i+1}° Persona: ${p.name} — DNI: ${p.doc}`;
+                        ul.appendChild(li);
+                    });
+                    applicantsList.appendChild(ul);
+                }
+
+                // Determinar monto total y número de boletas
+                const singleAmount = 20000;
+                const totalPeople = people.length || 1;
+                const totalAmount = singleAmount * totalPeople;
+                depositAmountEl.textContent = `$${totalAmount.toLocaleString('es-AR')}`;
+
+                // Generar botones: por cada persona 1 CENAT y 1 CEPAT
+                people.forEach((p, i) => {
+                    const cenat = document.createElement('a');
+                    cenat.href = '#';
+                    cenat.className = 'boleta-button boleta-cenat';
+                    cenat.textContent = `${i+1}° - BOLETA CENAT`;
+                    boletasButtons.appendChild(cenat);
+
+                    const cepat = document.createElement('a');
+                    cepat.href = '#';
+                    cepat.className = 'boleta-button boleta-cepat';
+                    cepat.style.marginLeft = '8px';
+                    cepat.textContent = `${i+1}° - BOLETA CEPAT`;
+                    boletasButtons.appendChild(cepat);
+                });
+            })();
             </script>
 
             <script>
